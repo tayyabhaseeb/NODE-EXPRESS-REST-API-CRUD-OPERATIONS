@@ -40,9 +40,13 @@ const handleValidationError = (err) => {
     .join('.');
   return new AppError(message, 400);
 };
+
+const jsonWebTokkenError = () => new AppError('Invalid token error', 401);
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
+
+  const tokenExpiredError = () => new AppError('Token is expired', 401);
 
   if (process.env.NODE_ENV === 'development') {
     errorInDevelopment(err, res);
@@ -58,6 +62,14 @@ module.exports = (err, req, res, next) => {
 
     if (err.name === 'ValidationError') {
       err = handleValidationError(err);
+    }
+
+    if (err.name === 'JsonWebTokenError') {
+      err = jsonWebTokkenError();
+    }
+
+    if (err.name === 'TokenExpiredError') {
+      err = tokenExpiredError();
     }
     errorInProduction(err, res);
   }

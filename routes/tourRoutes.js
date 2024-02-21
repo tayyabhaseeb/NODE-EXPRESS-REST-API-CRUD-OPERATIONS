@@ -12,13 +12,15 @@ const {
   busyMonth,
 } = require('../controllers/tourController');
 
+const { protect } = require('../controllers/authController');
+
 const cheapToursMiddleWare = (req, res, next) => {
   req.query.limit = 5;
   req.query.sort = 'price, -ratingsAverage';
   next();
 };
 
-router.route('/').get(readAllTour).post(createNewTour);
+router.route('/').get(protect, readAllTour).post(createNewTour);
 router.route('/top-5-cheap-tours').get(cheapToursMiddleWare, readAllTour);
 
 router.route('/general-data-insights').get(insightData);
