@@ -10,10 +10,19 @@ const {
   deleteUser,
 } = require('../controllers/userController');
 
-const { signup, login } = require('../controllers/authController');
+const {
+  signup,
+  login,
+  forgetPassword,
+  resetPassword,
+} = require('../controllers/authController');
 
 router.route('/signup').post(signup);
 router.route('/login').post(login);
+// router.route('/forgetPassword').post(forgetPassword);
+router.post('/forgetPassword', forgetPassword);
+
+router.route('/resetPassword/:token').patch(resetPassword);
 
 router.route('/').get(getAllUsers).post(createNewUser);
 router.route('/:id').get(getSpecificUser).patch(updateUser).delete(deleteUser);
