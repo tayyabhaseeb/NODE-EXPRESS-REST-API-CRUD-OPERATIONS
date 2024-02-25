@@ -10,6 +10,22 @@ const createToken = (id) =>
     expiresIn: process.env.TOKEN_EXPIRE,
   });
 
+const createSendToken = (user, res, statusCode) => {
+  const token = createToken(user._id);
+  res.cookie('jwt', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    expires: new Date(
+      Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+    ), // 90 days in milliseconds
+  });
+  res.status(statusCode).json({
+    status: 'Success',
+    token,
+    user,
+  });
+};
+
 exports.signup = async (req, res, next) => {
   // create user
   // validate password
@@ -24,12 +40,13 @@ exports.signup = async (req, res, next) => {
       role: req.body.role,
     });
 
-    const token = createToken(user._id);
-    res.status(201).json({
-      status: 'Success',
-      token,
-      user,
-    });
+    // const token = createToken(user._id);
+    // res.status(201).json({
+    //   status: 'Success',
+    //   token,
+    //   user,
+    // });
+    createSendToken(user, res, 201);
   } catch (err) {
     next(err);
   }
@@ -52,14 +69,16 @@ exports.login = async (req, res, next) => {
   }
   // check that the password is hiddenin DB and compare that hidden password with encrypted one
   // create token
-  const token = createToken(user._id);
+  // const token = createToken(user._id);
 
   // send token
 
-  res.status(200).json({
-    status: 'Success',
-    token,
-  });
+  // res.status(200).json({
+  //   status: 'Success',
+  //   token,
+  // });
+
+  createSendToken(user, res, 200);
 };
 
 // Getting token and check its there
@@ -197,16 +216,49 @@ exports.resetPassword = async (req, res, next) => {
 
     await user.save();
 
-    const token = createToken(user._id);
+    // const token = createToken(user._id);
 
     // send token
 
-    res.status(200).json({
-      status: 'Success',
-      token,
-    });
+    // res.status(200).json({
+    //   status: 'Success',
+    //   token,
+    // });
+
+    createSendToken(user, res, 200);
 
     next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updatePassword = async (req, res, next) => {
+  // get the user from collection
+  // check if posted current password is correct
+  // if so update password
+  // log user in send jwt
+  const { currentPassword, newPassword, newConfirmPassword } = req.body;
+  try {
+    const user = await User.findById(req.user._id).select('+password');
+
+    if (!user || !(await user.checkPassword(currentPassword, user.password))) {
+      next(new AppError('Invalid password or email', 400));
+    }
+
+    user.password = newPassword;
+    user.passwordConfirm = newConfirmPassword;
+
+    await user.save();
+
+    // const token = createToken(user._id);
+
+    // res.status(200).json({
+    //   status: 'success',
+    //   token,
+    // });
+
+    createSendToken(user, res, 200);
   } catch (err) {
     next(err);
   }
