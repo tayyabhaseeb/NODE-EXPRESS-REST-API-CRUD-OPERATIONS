@@ -29,7 +29,7 @@ exports.readAllTour = async (req, res, next) => {
 
 exports.readSpecificTour = async (req, res, next) => {
   try {
-    const tour = await Tour.findById(req.params.id);
+    const tour = await Tour.findById(req.params.id).populate('reviews');
 
     if (!tour) {
       return next(new AppError('The item with this id is not found', 404));

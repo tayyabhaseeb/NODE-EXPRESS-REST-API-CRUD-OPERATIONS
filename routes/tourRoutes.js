@@ -14,11 +14,15 @@ const {
 
 const { protect, restrictTo } = require('../controllers/authController');
 
+const reviewRouter = require('./reviewRoutes');
+
 const cheapToursMiddleWare = (req, res, next) => {
   req.query.limit = 5;
   req.query.sort = 'price, -ratingsAverage';
   next();
 };
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/').get(protect, readAllTour).post(createNewTour);
 router.route('/top-5-cheap-tours').get(cheapToursMiddleWare, readAllTour);

@@ -39,5 +39,3 @@ process.on('rejectionHandled', (err) => {
     process.exit(1);
   });
 });
-
-// test

@@ -13,6 +13,7 @@ const hpp = require('hpp');
 const tourRouter = require('./routes/tourRoutes');
 
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const AppError = require('./utils/appError');
 const errorController = require('./controllers/errorController');
 
@@ -64,6 +65,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
@@ -72,19 +74,5 @@ app.all('*', (req, res, next) => {
 app.use(errorController);
 
 // * SERVER LISTEN
-
-// ! Get (Read)
-// app.get('/api/v1/tours', readAllTour);
-//! GET REQUEST WITH ID (ROUTES)
-// app.get('/api/v1/tours/:id', readSpecificTour);
-//  ! POST REQUEST //
-// middleware ==> modify the request data
-// middleware means in the middle ==> between client and server
-// middlewares are used to manipulate the requests and responses
-// app.post('/api/v1/tours', createNewTour);
-// ! PATCH THE API
-// app.patch('/api/v1/tours/:id', updateTour);
-// ! DELETE FROM THE API
-// app.delete('/api/v1/tours/:id', deleteTour);
 
 module.exports = app;

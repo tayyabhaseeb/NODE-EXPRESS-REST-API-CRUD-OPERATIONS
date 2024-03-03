@@ -23,9 +23,7 @@ mongoose
     console.error('Error connecting to the database:', error);
   });
 
-const data = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
-);
+const data = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 const importData = async () => {
   try {
