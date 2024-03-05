@@ -1,5 +1,6 @@
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
+const { deleteOne, updateOne, getOne, getAll } = require('./handlerFactory');
 
 const filterObj = (obj, ...properties) => {
   const newObj = {};
@@ -9,45 +10,17 @@ const filterObj = (obj, ...properties) => {
   return newObj;
 };
 
-exports.getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({
-      message: 'success',
-      users,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
 exports.createNewUser = (req, res) => {
   res.status(500).json({
     status: 'Fail',
-    message: 'Internal Server Error',
+    message: 'This route is not valid instead use /signup route',
   });
 };
 
-exports.getSpecificUser = (req, res) => {
-  res.status(500).json({
-    status: 'Fail',
-    message: 'Internal Server Error',
-  });
-};
-
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'Fail',
-    message: 'Internal Server Error',
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'Fail',
-    message: 'Internal Server Error',
-  });
-};
+exports.getAllUsers = getAll(User);
+exports.getSpecificUser = getOne(User);
+exports.updateUser = updateOne(User);
+exports.deleteUser = deleteOne(User);
 
 exports.updateMe = async (req, res, next) => {
   // body password ==> error
