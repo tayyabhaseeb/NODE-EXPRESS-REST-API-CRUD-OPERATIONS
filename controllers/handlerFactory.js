@@ -78,7 +78,9 @@ exports.getAll = (Model) =>
     if (req.params.tourId)
       filterByTourIdInReviews = { tour: req.params.tourId };
     // end here
+    // let dbQuery = Model.find(filterByTourIdInReviews).explain();
     let dbQuery = Model.find(filterByTourIdInReviews);
+
     dbQuery = filter(dbQuery, req.query);
     dbQuery = sort(dbQuery, req.query);
     dbQuery = paginate(dbQuery, req.query);

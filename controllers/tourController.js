@@ -73,7 +73,7 @@ exports.busyMonth = async (req, res, next) => {
       $group: {
         _id: { $month: '$startDates' },
         numTourStart: { $sum: 1 },
-        tours: { $push: '$name' },
+        tours: { $push: '$name' }, // this gives the array of tour names
       },
     },
 

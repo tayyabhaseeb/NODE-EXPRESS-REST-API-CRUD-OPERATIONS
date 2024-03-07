@@ -134,6 +134,7 @@ tourSchema.virtual('durationWeek').get(function () {
 });
 
 tourSchema.pre('save', function (next) {
+  // document middleware
   this.slug = slugify(this.name, { lower: true });
   next();
 });
@@ -145,6 +146,7 @@ tourSchema.pre('save', function (next) {
 // });
 
 tourSchema.pre(/^find/, function (next) {
+  // Query middleware
   this.find({ secretTour: { $ne: true } });
   next();
 });

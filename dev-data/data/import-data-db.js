@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
-const dotenv = require('dotenv');
-
-dotenv.config({ path: '../../config.env' });
-
-const mongoose = require('mongoose');
 const fs = require('fs');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const Tour = require('../../models/tourModel');
+const Review = require('../../models/reviewModel');
+const User = require('../../models/userModel');
+
+dotenv.config({ path: './config.env' });
 
 const DB =
   'mongodb+srv://tayyab:077BuiknatOtUsIT@cluster0.xckkbxb.mongodb.net/natours?retryWrites=true&w=majority';
@@ -23,26 +23,37 @@ mongoose
     console.error('Error connecting to the database:', error);
   });
 
-const data = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
+// READ JSON FILE
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
+const reviews = JSON.parse(
+  fs.readFileSync(`${__dirname}/reviews.json`, 'utf-8'),
+);
 
+// IMPORT DATA INTO DB
 const importData = async () => {
   try {
-    await Tour.create(data);
-    console.log('Data is transferred to DB');
-    process.exit();
+    await Tour.create(tours);
+    await User.create(users, { validateBeforeSave: false });
+    await Review.create(reviews);
+    console.log('Data successfully loaded!');
   } catch (err) {
-    console.log('There is some error in transferring the data ');
+    console.log(err);
   }
+  process.exit();
 };
 
+// DELETE ALL DATA FROM DB
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
-    console.log('Cleared the DB');
-    process.exit();
+    await User.deleteMany();
+    await Review.deleteMany();
+    console.log('Data successfully deleted!');
   } catch (err) {
-    console.log('There is  some error in deleting the data');
+    console.log(err);
   }
+  process.exit();
 };
 
 if (process.argv[2] === '--import') {

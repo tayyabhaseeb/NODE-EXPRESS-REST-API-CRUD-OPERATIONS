@@ -12,15 +12,17 @@ const {
   readSpecificReview,
 } = require('../controllers/reviewController');
 
+router.use(protect);
+
 router
   .route('/')
-  .get(protect, readAllReview)
-  .post(protect, restrictTo('user'), addUserTourId, createNewReview);
+  .get(readAllReview)
+  .post(restrictTo('user'), addUserTourId, createNewReview);
 
 router
   .route('/:id')
-  .delete(deleteReview)
-  .patch(updateReview)
+  .delete(restrictTo('admin', 'user'), deleteReview)
+  .patch(restrictTo('admin', 'user'), updateReview)
   .get(readSpecificReview);
 
 module.exports = router;

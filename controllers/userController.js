@@ -55,3 +55,13 @@ exports.deleteMe = async (req, res, next) => {
     next(err);
   }
 };
+
+// exports.getMe = (req, res, next) => {
+//   req.params.id = req.userId;
+//   next();
+// };
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};

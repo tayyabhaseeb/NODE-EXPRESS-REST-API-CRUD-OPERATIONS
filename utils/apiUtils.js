@@ -11,7 +11,6 @@ const filter = (dbQuery, reqQuery) => {
 
   if (apiQueryString.includes('gt')) {
     apiQuery = JSON.parse(apiQueryString.replace('gt', '$gt'));
-    // console.log(apiQuery);
   } else if (apiQueryString.includes('gte')) {
     apiQuery = JSON.parse(apiQueryString.replace('gte', '$gte'));
   } else if (apiQueryString.includes('lt')) {
